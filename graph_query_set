@@ -1,0 +1,27 @@
+// Find me people who know other people through 'data analysis'
+MATCH (p1)-[:KNOWS {tag:"data analysis"}]->(p2), (p2)-[:KNOWS {tag:"SQL"}]->(p3)
+RETURN p1, p2, p3;
+
+
+// Show me people who's asserted others to be the authority on a topic
+MATCH (p1)-[rel :KNOWS {strength:"2", tag:"data analysis"}]->(p2)
+RETURN p1, rel, p2;
+
+// Triadic Closure with Skills to Connect On
+MATCH (p1 {first_name: "Adam"})-[rel :KNOWS]->(friend)-[rel2: KNOWS]->(stranger) WHERE p1 <> stranger
+RETURN distinct friend.first_name, friend.last_name, stranger.first_name, stranger.last_name, collect(distinct rel2.tag) as Connect_On;
+
+// Friends-in-Common for friends of friends
+MATCH (p1 {first_name: "Adam"})-[rel :KNOWS]->(commonfriend)-[rel2: KNOWS]->(stranger) WHERE p1 <> stranger
+RETURN distinct p1.first_name, p1.last_name, stranger.first_name, stranger.last_name, count(commonfriend) as FriendsInCommon order by FriendsInCommon desc;
+
+// Graph-wide Maven
+MATCH (p1)-[rel :KNOWS {tag:"SQL"}]->(expert) WHERE p1 <> expert
+RETURN expert.first_name, expert.last_name, count(rel) as IncomingTags, sum(toint(rel.strength)) as TagStrength order by TagStrength desc;
+
+
+
+
+
+
+

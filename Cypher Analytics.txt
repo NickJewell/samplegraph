@@ -1,0 +1,14 @@
+-- Find people connected to adam that know data analysis, then find different people connected to them that know SQL
+
+MATCH (p1 {first_name:"Adam"})-[:KNOWS {tag:"data analysis"}]->(p2), (p2)-[:KNOWS {tag:"SQL"}]->(p3)
+RETURN p1, p2, p3;
+
+-- Find people connect to <parameter > that know data analysis
+
+MATCH (p1 {first_name:{name})-[:KNOWS {tag:"data analysis"}]->(p2)
+RETURN p1, p2;
+
+MATCH (p1:Person)-[rel:KNOWS]->(p2:Person) WHERE p1.first_name = "Helen" RETURN p1.first_name, p2.first_name, rel.tag, rel.strength
+
+MATCH (p1:Person)-[rel:KNOWS]->(p2:Person) WHERE p1.first_name = "Helen" RETURN p1.first_name, p2.first_name, collect(rel.tag)
+

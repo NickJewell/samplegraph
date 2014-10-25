@@ -3,6 +3,13 @@ load csv with headers from
 as nodes
 CREATE (n:Person { id: nodes.id, first_name: nodes.first, last_name: nodes.last, grade: nodes.grade})
 
+
+load csv with headers from
+https://github.com/NickJewell/samplegraph/blob/master/nodes.csv
+as nodes
+CREATE (n:Person { id: nodes.id, first_name: nodes.first, last_name: nodes.last, grade: nodes.grade})
+
+
 load csv with headers from
 "file:/Users/nick/Unity/samplegraph/relationships.csv"
 as rel
@@ -10,5 +17,4 @@ MATCH (from {id: rel.from }), (to {id: rel.to})
 CREATE from-[:KNOWS {tag: rel.tag, created_date: rel.create, updated_date: rel.update, private: rel.private, strength: rel.strength}]->to;
 
 
-MATCH (p1)-[:KNOWS {tag:"data analysis"}]->(p2), (p2)-[:KNOWS {tag:"SQL"}]->(p3)
-RETURN p1, p2, p3;
+MATCH (p1:Person)-[rel:KNOWS {tag:'data analysis'}]-(p2:Person), (p1)-[test:KNOWS]-(p2) WHERE p1.id= '4' RETURN p2.first_name, p2.last_name, rel.tag, collect(test.tag) as other_tags
